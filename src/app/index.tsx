@@ -1,98 +1,104 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
+import { useState } from 'react';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
-
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
-  return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
-
 export default function HomeScreen() {
+  const [message, setMessage] = useState('');
+  const [messageVisible, setMessageVisible] = useState(false);
+  
   return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.logo}>Melodies</Text>
+        <Text style={styles.subtitle}>
+          Toute ta musique, au même endroit.
+        </Text>
+      </View>
 
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>
+          Bienvenue sur Melodies
+        </Text>
+        <Text style={styles.description}>
+          Découvre tes morceaux préférés et profite de la musique.
+        </Text>
 
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
+        {messageVisible && (
+          <Text style={styles.description}>
+            {message}
+          </Text>
+        )}
 
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
+        <Pressable
+          style={styles.button}
+          onPress={() => {
+            setMessage('Merci de découvrir la musique avec nous !');
+            setMessageVisible(!messageVisible);
+          }}
+        >
+          <Text style={styles.buttonText}>
+            Découvrir la musique
+          </Text>
+        </Pressable>
+      </View>
+
+      <Text style={styles.footer}>
+        Ta musique, ton univers.
+      </Text>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
+    backgroundColor: '#121212',
+    paddingHorizontal: 24,
+    paddingVertical: 20,
+    justifyContent: 'space-between',
   },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
+  header: {
+    marginTop: 24,
+  },
+  logo: {
+    color: '#FFFFFF',
+    fontSize: 30,
+    fontWeight: 'bold',
+  },
+  subtitle: {
+    color: '#B3B3B3',
+    fontSize: 14,
+    marginTop: 8,
+  },
+  section: {
+    gap: 16,
+  },
+  sectionTitle: {
+    color: '#FFFFFF',
+    fontSize: 25,
+    fontWeight: 'bold',
+  },
+  description: {
+    color: '#B3B3B3',
+    fontSize: 16,
+    lineHeight: 24,
+  },
+  button: {
+    backgroundColor: '#1DB954',
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 30,
     alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
   },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
+  buttonText: {
+    color: '#121212',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
-  title: {
+  footer: {
+    color: '#777777',
+    fontSize: 13,
     textAlign: 'center',
-  },
-  code: {
-    textTransform: 'uppercase',
-  },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
+    marginBottom: 12,
   },
 });
